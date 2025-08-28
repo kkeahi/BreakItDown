@@ -1,11 +1,10 @@
 package com.keahi.backend;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 
 // ai api request
 
@@ -14,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 class BreakItDownController {
-  @GetMapping("/breakitdown")
-  public static void main(String[] args) {
-    System.out.println("received /breakitdown");
+  @PostMapping("/breakitdown")
+  public String createPrompt(@RequestBody String context) {
+    Gson gson = new Gson();
+    Prompt prompt = gson.fromJson(context, Prompt.class);
+    return prompt.getSubject();
   }
 }
