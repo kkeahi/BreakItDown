@@ -18,16 +18,14 @@ import com.google.gson.Gson;
 class BreakItDownController {
 
   @PostMapping("/breakitdown")
-  public String createPrompt(@RequestBody String context) {
+  public String createPrompt(@RequestBody String contextJson) {
     Gson gson = new Gson();
-    Prompt prompt = gson.fromJson(context, Prompt.class);
 
-    List<String> contextList = new ArrayList<String>();
-    contextList.add("a");
-    contextList.add("b");
+    Context context = gson.fromJson(contextJson, Context.class);
+    String queryPrompt = context.getGeminiPrompt();
 
-    QueryGemini query = new QueryGemini();
-    String response = query.input(contextList);
+    QueryGemini gemini = new QueryGemini();
+    String response = gemini.query(queryPrompt);
     // ai api call
     return response;
   }
