@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 @RestController
 class BreakItDownController {
 
-  @PostMapping("/breakitdown")
+  @PostMapping("api/breakitdown")
   public String createPrompt(@RequestBody String contextJson) {
     Gson gson = new Gson();
 
