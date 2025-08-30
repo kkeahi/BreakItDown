@@ -1,5 +1,6 @@
 package com.keahi.backend;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 @RestController
 class BreakItDownController {
 
+  @CrossOrigin(origins = "chrome-extension://ngokcbcmejdngmehmcobbabkdhephbao")
   @PostMapping("api/breakitdown")
   public String createPrompt(@RequestBody String contextJson) {
     Gson gson = new Gson();
