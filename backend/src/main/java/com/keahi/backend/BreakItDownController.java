@@ -2,33 +2,29 @@ package com.keahi.backend;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
-
-// ai api request
+import org.springframework.web.bind.annotation.RequestMapping;
 
 // mvn clean package
 // mvn spring-boot:run
 
 @RestController
-class BreakItDownController {
+@RequestMapping("/api")
+@CrossOrigin(origins = "chrome-extension://ngokcbcmejdngmehmcobbabkdhephbao")
+public class BreakItDownController {
 
-  @CrossOrigin(origins = "chrome-extension://ngokcbcmejdngmehmcobbabkdhephbao")
-  @PostMapping("api/breakitdown")
-  public String createPrompt(@RequestBody String contextJson) {
-    Gson gson = new Gson();
+  private final PromptService promptService;
 
-    Context context = gson.fromJson(contextJson, Context.class);
-    String queryPrompt = context.getGeminiPrompt();
+  public BreakItDownController(PromptService promptService) {
+    this.promptService = promptService;
+  }
 
-    QueryGemini gemini = new QueryGemini();
-    String response = gemini.query(queryPrompt);
-    // ai api call
-    return response;
+  @PostMapping("/breakitdown")
+  public Response breakItDown(@RequestBody Context context) {
+    Gemini client = new Gemini();
+    String prompt = promptService.createPrompt(context.getSubject());
+    return new Response(client.query(prompt));
   }
 }

@@ -11,11 +11,9 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "main") {
     console.log("Selected text:", info.selectionText);
-
     try {
       const response = await fetch(`${backendUrl}/api/breakitdown`, {
         method: 'POST',
-
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           subject: info.selectionText
@@ -23,7 +21,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+        throw new Error(`${response.status}`);
       }
 
       const data = await response.json();
