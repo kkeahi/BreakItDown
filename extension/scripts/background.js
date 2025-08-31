@@ -9,8 +9,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["scripts/content.js"]
+  });
+
+
   if (info.menuItemId === "main") {
-    console.log("Selected text:", info.selectionText);
     try {
       const response = await fetch(`${backendUrl}/api/breakitdown`, {
         method: 'POST',
@@ -25,7 +30,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       }
 
       const data = await response.json();
-      console.log("API Response: ", data);
+      // console.log("API Response: ", data);
+
+
     } catch (e) {
       console.error("Failed to simplify text: ", e);
     }
