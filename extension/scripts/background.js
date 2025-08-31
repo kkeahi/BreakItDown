@@ -9,8 +9,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-
   if (info.menuItemId === "main") {
+
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["scripts/content.js"]
@@ -31,10 +31,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       const data = await response.json();
       
-      await chrome.tabs.sendMessage(tab.id, { explanation: data.response});
+      await chrome.tabs.sendMessage(tab.id, {
+        id: "explanation",
+        body: data.response
+      });
 
-    } catch (e) {
-      console.error("Failed to simplify text: ", e);
+    } catch (err) {
+      console.error("Failed to simplify text: ", err);
     }
   }
 });
+

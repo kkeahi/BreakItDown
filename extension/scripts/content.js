@@ -1,5 +1,4 @@
 // loading modal while fetching, highlight selected text, have text appear letter by letter
-// add function to injected button
 
 (function () {
   const modalExists = document.getElementById('injected-modal-id');
@@ -134,16 +133,31 @@ function makeClosable(button, modal) {
   })
 }
 
-chrome.runtime.onMessage.addListener(
-  function handleMessages(message, sender, sendResponse) {
-    console.log(message.explanation);
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    const explanationElement = document.getElementById('injected-text-id');
-    explanationElement.innerHTML = message.explanation;
+async function typewrite(element, text) {
+  let typewriter = ""
+  element.innerHTML = "";
+  console.log(text);
+  for (let char of text) {
+    console.log(char);
+    typewriter += char;
+    element.innerHTML = typewriter;
+    await delay(30);
+  }
+}
+
+chrome.runtime.onMessage.addListener(
+  async function handleMessages(message, sender, sendResponse) {
+    if (message.id == "explanation") {
+      const explanationElement = document.getElementById('injected-text-id');
+      await typewrite(explanationElement, message.body);
+    }
 
     fetch(message.url)
-      .then((response) => sendResponse({ statusCode: response.status} ))
-
+      .then((response) => sendResponse({ statusCode: response.status }))
     return true;
   }
 );
