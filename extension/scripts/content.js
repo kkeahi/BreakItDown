@@ -17,10 +17,12 @@
 
   const modalHeaderButton = document.createElement('button');
   modalHeaderButton.className = 'injected-button';
+  modalHeaderButton.innerHTML = "x"
   modalHeader.appendChild(modalHeaderButton);
 
   const modalBodyText = document.createElement('p');
-  modalBodyText.className = 'injexted-text';
+  modalBodyText.className = 'injected-text';
+  modalBodyText.id = 'injected-text-id'
   modalBodyText.innerHTML = "...";
   modalBody.appendChild(modalBodyText);
 
@@ -115,3 +117,14 @@ function makeDraggable(element) {
     document.removeEventListener('mousemove', elementDrag);
   }
 }
+
+chrome.runtime.onMessage.addListener(
+  function handleMessages(message) {
+    console.log(message.explanation);
+
+    const explanationElement = document.getElementById('injected-text-id');
+    explanationElement.innerHTML = message.explanation;
+
+    return true;
+  }
+);

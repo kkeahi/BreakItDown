@@ -9,13 +9,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ["scripts/content.js"]
-  });
-
 
   if (info.menuItemId === "main") {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["scripts/content.js"]
+    });
+
     try {
       const response = await fetch(`${backendUrl}/api/breakitdown`, {
         method: 'POST',
@@ -30,8 +30,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       }
 
       const data = await response.json();
-      // console.log("API Response: ", data);
-
+      
+      await chrome.tabs.sendMessage(tab.id, { explanation: data.response});
 
     } catch (e) {
       console.error("Failed to simplify text: ", e);
