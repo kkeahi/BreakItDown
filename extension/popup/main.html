@@ -1,11 +1,7 @@
 <html>
    <head>
       <style>
-         .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
+          .modal {
             padding: 10px;
             width: 200px;
             cursor: pointer;
@@ -17,55 +13,162 @@
             font-family: 'Georgia', 'Merriweather', serif;
             box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
          }
-         .container input {
+         
+         .main-options {
+            display: flex;
+            align-items: center;
             position: relative;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            background: #FFD166;
+            color: #3A2E2E;
+            border: 2px solid #8D6E63;
+            border-radius: 8px;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 8px;
+         }
+         
+         .main-options:hover {
+            background: #FFC947;
+         }
+         
+         .main-options input {
+            position: absolute;
             opacity: 0;
             cursor: pointer;
             height: 0;
             width: 0;
          }
+         
          .checkmark {
             position: relative;
-            top: 0;
-            left: 0;
-            height: 25px;
-            width: 25px;
+            height: 22px;
+            width: 22px;
             background-color: #8D6E63;
+            border-radius: 3px;
+            margin-right: 12px;
+            flex-shrink: 0;
          }
-         .container:hover input ~ .checkmark {
+         
+         .main-options:hover .checkmark {
             background-color: #694f46;
          }
-         .container input:checked ~ .checkmark {
+         
+         .main-options input:checked ~ .checkmark {
             background-color: #D7263D;
          }
+         
          .checkmark:after {
             content: "";
-            position: relative;
+            position: absolute;
             display: none;
-         }
-         .container input:checked ~ .checkmark:after {
-            display: block;
-         }
-         .container .checkmark:after {
-            left: 9px;
-            top: 5px;
+            left: 7px;
+            top: 3px;
             width: 5px;
             height: 10px;
             border: solid white;
-            border-width: 0 3px 3px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
+            border-width: 0 2px 2px 0;
             transform: rotate(45deg);
          }
+         
+         .main-options input:checked ~ .checkmark:after {
+            display: block;
+         }
+         
+         .sub-options {
+            margin: 8px 5px s 5px;
+         }
+         
+         .option {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            background: #8D6E63;
+            color: #ebccc1;
+            border: 1px solid #8D6E63;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: background-color 0.2s ease;
+         }
+         
+         .option:hover {
+            background: #695148;
+         }
+         
+         .option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+         }
+         
+         .sub-checkmark {
+            position: relative;
+            height: 18px;
+            width: 18px;
+            background-color: #fff4da;
+            border-radius: 2px;
+            margin-right: 10px;
+            flex-shrink: 0;
+         }
+         
+         .option input:checked ~ .sub-checkmark {
+            background-color: #FFD166;
+         }
+         
+         .sub-checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+         }
+         
+         .option input:checked ~ .sub-checkmark:after {
+            display: block;
+         }
       </style>
+
+      <script src="../scripts/popup.js"></script>
    </head>
 
    <body>
-      <label class="container">
-         Research Mode
-         <input type="checkbox" id="research-mode-checkbox-id">
-         <span class="checkmark"></span>
-         <script src="../scripts/popup.js"></script>
-      </label>
+      <div class="modal">
+         <label class="main-options">
+            <input type="checkbox" id="research-mode-checkbox">
+            <span class="checkmark"></span>
+            <span>Research Mode</span>
+         </label>
+
+         <div class="sub-options" id="resource-options">
+            <!-- <label class="option">
+               <input type="checkbox" id="grind-75-checkbox">
+               <span class="sub-checkmark"></span>
+               <span>Option 1</span>
+            </label>
+            
+            <label class="option">
+               <input type="checkbox" id="leetcode-patterns-checkbox">
+               <span class="sub-checkmark"></span>
+               <span>Option 2</span>
+            </label>
+            
+            <label class="option">
+               <input type="checkbox" id="system-design-checkbox">
+               <span class="sub-checkmark"></span>
+               <span>Option 3</span>
+            </label> -->
+         </div>
+      </div>
    </body>
 </html>
