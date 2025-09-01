@@ -41,26 +41,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-chrome.tabs.onCreated.addListener(async (tab) => {
-  console.log("ADD");
-  const { tabs } = await chrome.storage.local.get({ tabs: [] });
-  tabs.push(tab.id);
-  await chrome.storage.local.set({ tabs });
-
-  console.log(tabs);
+chrome.tabs.onCreated.addListener(async () => {
+  await chrome.runtime.sendMessage({ id: "refresh-tab-options" });
 });
 
-chrome.tabs.onRemoved.addListener(async (tabId) => {
-  console.log("REMOVE");
-  const { tabs } = await chrome.storage.local.get({ tabs: [] });
-
-  if (!tabs.includes(tabId)) {
-    console.warn("Deleted tab not found in storage: ", tabId);
-    return;
-  }
-
-  tabs.splice(tabs.indexOf(tabId), 1);
-  await chrome.storage.local.set({ tabs });
-
-  console.log(tabs);
+chrome.tabs.onRemoved.addListener(async () => {
+  await chrome.runtime.sendMessage({ id: "refresh-tab-options" });
 });

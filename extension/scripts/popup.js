@@ -19,10 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadTabs() {
   const resourceOptions = document.getElementById('resource-options');
 
-  const { tabs } = await chrome.storage.local.get({ tabs: [] });
-  const tabObjects = tabs.map(async (tabId) => await chrome.tabs.get(tabId));
+  const tabs = await chrome.tabs.query({});
 
-  for (const tab of tabObjects) {
+  for (const tab of tabs) {
+    if (tab.title == "New Tab") continue;
+
     const option = document.createElement('label');
     option.className = 'option';
 
@@ -42,7 +43,10 @@ async function loadTabs() {
   }
 }
 
-chrome.storage.onChanged.addListener(async () => {
-  console.log("CHANGE");
-  if (isDocumentLoaded) await loadTabs();
-});
+chrome.runtime.onMessage.addListener(
+  async function handleMessages(message) {
+    if (message.id == "refresh-tab-options") {
+      if (isDocumentLoaded) await loadTabs();
+    };
+  }
+);
