@@ -1,3 +1,6 @@
+let isModalOpen = false;
+let isLoading = false;
+
 async function showModal() {
   const modalExists = document.getElementById('injected-modal-id');
   if (modalExists) return;
@@ -119,10 +122,13 @@ async function showModal() {
   makeClosable(modalHeaderButton, modal);
   makeDraggable(modalHeader, modal);
   makeResizable(modalResizeButton, modal);
+
+  isModalOpen = true;
 }
 
 function makeClosable(button, modal) {
   button.addEventListener('click', function() {
+    isModalOpen = false;
     modal.remove();
   })
 }
@@ -209,18 +215,36 @@ async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function typewrite(element, text) {
-  let typewriter = ""
-  element.innerHTML = "";
-  console.log(text);
-  for (let char of text) {
-    typewriter += char;
-    element.innerHTML = typewriter;
-    await delay(25);
+async function setLoading(element) {
+  isLoading = true;
+  loadingText = "&nbsp";
+  while (isModalOpen && isLoading) {
+    if (loadingText == "&nbsp") {
+      loadingText = ".";
+    } else {
+      loadingText += "."; 
+    }
+    if (loadingText.length > 4) loadingText = "&nbsp";
+    element.innerHTML = loadingText;
+    await delay(250);
   }
 }
 
-let isLoading = false;
+async function typewrite(element, text) {
+  if (isModalOpen) {
+    let typewriter = ""
+    element.innerHTML = "";
+    
+    for (let char of text) {
+      if (isModalOpen) {
+        typewriter += char;
+        element.innerHTML = typewriter;
+        await delay(25);
+      }
+    }
+  }
+}
+
 chrome.runtime.onMessage.addListener(
   async function handleMessages(message, sender, sendResponse) {
     if (message.id == "show-modal") {
@@ -242,19 +266,3 @@ chrome.runtime.onMessage.addListener(
     return true;
   }
 );
-
-
-async function setLoading(element) {
-  isLoading = true;
-  loadingText = "&nbsp";
-  while (isLoading) {
-    if (loadingText == "&nbsp") {
-      loadingText = ".";
-    } else {
-      loadingText += "."; 
-    }
-    if (loadingText.length > 4) loadingText = "&nbsp";
-    element.innerHTML = loadingText;
-    await delay(250);
-  }
-}
