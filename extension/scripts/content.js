@@ -116,7 +116,7 @@ async function showModal() {
 
   document.body.append(modal);
   makeClosable(modalHeaderButton, modal);
-  makeDraggable(modal);
+  makeDraggable(modalHeader, modal);
   makeResizable(modalResizeButton, modal);
 }
 
@@ -126,10 +126,10 @@ function makeClosable(button, modal) {
   })
 }
 
-function makeDraggable(element) {
+function makeDraggable(header, modal) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   
-  element.addEventListener('mousedown', dragMouseDown);
+  header.addEventListener('mousedown', dragMouseDown);
 
   function dragMouseDown(e) {
     e.preventDefault();
@@ -145,8 +145,8 @@ function makeDraggable(element) {
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    element.style.top  = (element.offsetTop  - pos2) + 'px';
-    element.style.left = (element.offsetLeft - pos1) + 'px';
+    modal.style.top  = (modal.offsetTop  - pos2) + 'px';
+    modal.style.left = (modal.offsetLeft - pos1) + 'px';
   }
 
   function closeDragElement() {
