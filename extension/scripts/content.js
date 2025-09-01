@@ -10,6 +10,9 @@ function showModal() {
     style.id = 'injected-style-id';
     style.textContent= `
       .injected-modal {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
         position: fixed;
         top: 50px;
         left: 50px;
@@ -24,6 +27,7 @@ function showModal() {
 
       .injected-header {
         display: flex;
+        flex: 0 0 auto;
         align-items: center;
         justify-content: space-between;
         background: #D7263D;
@@ -34,15 +38,28 @@ function showModal() {
       }
 
       .injected-body {
+        flex: 1 1 auto;
+        min-height: 0;
         background: #FFD166;
         color: #3A2E2E;
         padding: 10px;
-        max-height: 120px;
         overflow-y: auto;
         line-height: 1.5;
         border-radius: 0 0 6px 6px;
         scrollbar-width: thin;
         font-size: 15px;
+      }
+
+      .injected-resizer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 14px;
+        height: 14px;
+        background: #D7263D;
+        cursor: nwse-resize;
+        border-radius: 3px 3px 6px 3px;
+        z-index: 10000;
       }
 
       .injected-text {
@@ -77,6 +94,10 @@ function showModal() {
   const modalBody = document.createElement('div');
   modalBody.className = 'injected-body';
   modal.appendChild(modalBody);
+
+  const modalResizeButton = document.createElement('div');
+  modalResizeButton.className = 'injected-resizer';
+  modal.appendChild(modalResizeButton);
   
   const modalHeaderSpan = document.createElement('span');
   modalHeaderSpan.innerHTML = 'Break It Down';
@@ -94,8 +115,15 @@ function showModal() {
   modalBody.appendChild(modalBodyText);
 
   document.body.append(modal);
-  makeDraggable(modal);
   makeClosable(modalHeaderButton, modal);
+  makeDraggable(modal);
+  makeResizable(modalResizeButton, modal);
+}
+
+function makeClosable(button, modal) {
+  button.addEventListener('click', function() {
+    modal.remove();
+  })
 }
 
 function makeDraggable(element) {
@@ -127,11 +155,54 @@ function makeDraggable(element) {
   }
 }
 
-function makeClosable(button, modal) {
-  button.addEventListener('click', function() {
-    modal.remove();
-  })
+function makeResizable(handle, modal, {
+  minW = 220,
+  minH = 50,
+  maxW = () => window.innerWidth,
+  maxH = () => window.innerHeight
+} = {}) {
+  if (!handle || !modal) return;
+
+  handle.style.touchAction = 'none';
+  handle.addEventListener('pointerdown', onDown);
+
+  function onDown(e) {
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startW = modal.offsetWidth;
+    const startH = modal.offsetHeight;
+
+    const prevSelect = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
+
+    function onMove(ev) {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+
+      const w = Math.min(typeof maxW === 'function' ? maxW() : maxW,
+        Math.max(minW, startW + dx));
+      const h = Math.min(typeof maxH === 'function' ? maxH() : maxH,
+        Math.max(minH, startH + dy));
+
+      modal.style.width = w + 'px';
+      modal.style.height = h + 'px';
+    }
+
+    function onUp(ev) {
+      handle.releasePointerCapture(e.pointerId);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      document.body.style.userSelect = prevSelect;
+    }
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  }
 }
+
 
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
