@@ -1,6 +1,6 @@
 // loading modal while fetching, highlight selected text, have text appear letter by letter
 
-function showModal() {
+async function showModal() {
   const modalExists = document.getElementById('injected-modal-id');
   if (modalExists) return;
 
@@ -21,7 +21,7 @@ function showModal() {
         border-radius: 8px;
         font-family: 'Georgia', 'Merriweather', serif;
         box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
-        opacity: 0.9;
+        opacity: 0.95;
         z-index: 9999;
       }
 
@@ -219,17 +219,21 @@ async function typewrite(element, text) {
   }
 }
 
+let isLoading = false;
 chrome.runtime.onMessage.addListener(
   async function handleMessages(message, sender, sendResponse) {
-    if (message.id == "show-modal") showModal();
+    if (message.id == "show-modal") {
+      await showModal();
+      setLoading(document.getElementById('injected-text-id'));
+    };
 
     if (message.id == "research-mode") {
       if (message.body) console.log(message.body);
     }
 
     if (message.id == "explanation") {
-      const explanationElement = document.getElementById('injected-text-id');
-      await typewrite(explanationElement, message.body);
+      isLoading = false;
+      await typewrite(document.getElementById('injected-text-id'), message.body);
     }
 
     fetch(message.url)
@@ -237,3 +241,19 @@ chrome.runtime.onMessage.addListener(
     return true;
   }
 );
+
+
+async function setLoading(element) {
+  isLoading = true;
+  loadingText = "&nbsp";
+  while (isLoading) {
+    if (loadingText == "&nbsp") {
+      loadingText = ".";
+    } else {
+      loadingText += "."; 
+    }
+    if (loadingText.length > 4) loadingText = "&nbsp";
+    element.innerHTML = loadingText;
+    await delay(250);
+  }
+}
