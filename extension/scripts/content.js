@@ -69,14 +69,17 @@ async function showModal() {
         background: #F4A7B9;
         color: #3A2E2E;
         font-weight: bold;
+        border: 1px solid #F4A7B9;
         border-radius: 4px;
         padding: 0 6px;
         cursor: pointer;
       }
 
       .injected-button:hover {
-        background: #E57373;
-        color: white;
+        background: #df8da0ff;
+        color: #3A2E2E;
+        font-weight: bold;
+        border: 1px solid #3A2E2E;
       }`;
     document.head.appendChild(style);
   };
@@ -226,7 +229,7 @@ chrome.runtime.onMessage.addListener(
     };
 
     if (message.id == "research-mode") {
-      if (message.body) console.log(message.body);
+      console.log(message.body);
     }
 
     if (message.id == "explanation") {
