@@ -41,3 +41,24 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
+chrome.tabs.onCreated.addListener(async (tab) => {
+  const { tabs } = await chrome.storage.local.get({ tabs: [] });
+  tabs.push(tab.id);
+  await chrome.storage.local.set({ tabs });
+
+  console.log(tabs);
+});
+
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const { tabs } = await chrome.storage.local.get({ tabs: [] });
+
+  if (!tabs.includes(tabId)) {
+    console.warn(tabId, " not in openedTabs local storage.");
+    return;
+  }
+
+  tabs.splice(tabs.indexOf(tabId), 1);
+  await chrome.storage.local.set({ tabs });
+
+  console.log(tabs);
+});
