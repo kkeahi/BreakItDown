@@ -3,7 +3,7 @@
   "name": "BreakItDown",
   "version": "1.0.0",
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup/main.html",
     "default_icon": "icon.png"
   },
   "permissions": [

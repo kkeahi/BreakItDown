@@ -142,10 +142,9 @@ async function typewrite(element, text) {
   element.innerHTML = "";
   console.log(text);
   for (let char of text) {
-    console.log(char);
     typewriter += char;
     element.innerHTML = typewriter;
-    await delay(30);
+    await delay(25);
   }
 }
 
