@@ -1,5 +1,3 @@
-// loading modal while fetching, highlight selected text, have text appear letter by letter
-
 async function showModal() {
   const modalExists = document.getElementById('injected-modal-id');
   if (modalExists) return;

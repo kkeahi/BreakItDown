@@ -1,10 +1,14 @@
-const researchModeButton = document.getElementById('research-mode-checkbox-id');
+document.addEventListener("DOMContentLoaded", async () => {
+  const researchModeButton = document.getElementById('research-mode-checkbox-id');
 
-try {
-  researchModeButton.addEventListener('change', function() {
-    const checked = this.checked ? true : false;
+  const { researchMode = false } = await chrome.storage.local.get('researchMode');
+  researchModeButton.checked = !!researchMode;
 
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
+  researchModeButton.addEventListener('change', async (event) => {
+    const checked = event.target.checked;
+    await chrome.storage.local.set({ researchMode: checked });
+
+    chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
         var activeTab = tabs[0];
         chrome.tabs.sendMessage(activeTab.id, {
           id: "research-mode",
@@ -12,6 +16,4 @@ try {
         });
     });
   });
-} catch (err) {
-  throw new Error("Popup error: ", err);
-}
+});
