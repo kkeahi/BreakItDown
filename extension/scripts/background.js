@@ -11,9 +11,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "main") {
 
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["scripts/content.js"]
+    await chrome.tabs.sendMessage(tab.id, {
+      id: "show-modal"
     });
 
     try {

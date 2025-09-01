@@ -1,6 +1,6 @@
 // loading modal while fetching, highlight selected text, have text appear letter by letter
 
-(function () {
+function showModal() {
   const modalExists = document.getElementById('injected-modal-id');
   if (modalExists) return;
 
@@ -96,7 +96,7 @@
   document.body.append(modal);
   makeDraggable(modal);
   makeClosable(modalHeaderButton, modal);
-})()
+}
 
 function makeDraggable(element) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -150,6 +150,12 @@ async function typewrite(element, text) {
 
 chrome.runtime.onMessage.addListener(
   async function handleMessages(message, sender, sendResponse) {
+    if (message.id == "show-modal") showModal();
+
+    if (message.id == "research-mode") {
+      if (message.body) console.log(message.body);
+    }
+
     if (message.id == "explanation") {
       const explanationElement = document.getElementById('injected-text-id');
       await typewrite(explanationElement, message.body);
