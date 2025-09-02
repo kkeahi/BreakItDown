@@ -18,17 +18,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadTabs() {
   const resourceOptions = document.getElementById('resource-options');
+  
+  const { tabs } = await chrome.storage.local.get({ tabs: [] });
+  const openedTabs = await chrome.tabs.query({});
 
-  const tabs = await chrome.tabs.query({});
-
-  for (const tab of tabs) {
-    if (tab.title == "New Tab") continue;
+  for (const tab of openedTabs) {
+    if (tab.title == "New Tab" || tab.title == "Extensions") continue;
 
     const option = document.createElement('label');
     option.className = 'option';
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    if (tabs.some(obj => obj.tabId == tab.id)) checkbox.checked = true;
     option.appendChild(checkbox);
 
     const checkmark = document.createElement('span');
