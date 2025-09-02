@@ -42,9 +42,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 chrome.tabs.onCreated.addListener(async () => {
-  await chrome.runtime.sendMessage({ id: "refresh-tab-options" });
+  await chrome.runtime.sendMessage({ id: "refresh-tab-options" })
+    .catch(() => {});
 });
 
 chrome.tabs.onRemoved.addListener(async () => {
-  await chrome.runtime.sendMessage({ id: "refresh-tab-options" });
+  await chrome.runtime.sendMessage({ id: "refresh-tab-options" })
+    .catch(() => {});
 });
