@@ -41,7 +41,22 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-chrome.tabs.onCreated.addListener(async () => {
+chrome.runtime.onMessage.addListener(
+  async function handleMessages(message) {
+    if (message.id == "store-tab") {
+      console.log(message.id);
+      await chrome.tabs.sendMessage(message.body.tabId, {
+        id: message.id,
+        body: {
+          tabId: message.body.tabId,
+          checked: message.body.checked
+        }
+      })
+    }
+  }
+)
+
+chrome.tabs.onCreated.addListener(async (tab) => {
   await chrome.runtime.sendMessage({ id: "refresh-tab-options" })
     .catch(() => {});
 });

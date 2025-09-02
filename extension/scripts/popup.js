@@ -39,6 +39,16 @@ async function loadTabs() {
     label.innerHTML = tab.title;
     option.appendChild(label);
 
+    checkbox.addEventListener('change', async (event) => {
+      await chrome.runtime.sendMessage({
+        id: "store-tab",
+        body: {
+          tabId: tab.id,
+          checked: event.target.checked
+        }
+      });
+    })
+
     resourceOptions.appendChild(option);
   }
 }

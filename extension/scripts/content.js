@@ -246,14 +246,10 @@ async function typewrite(element, text) {
 }
 
 chrome.runtime.onMessage.addListener(
-  async function handleMessages(message, sender, sendResponse) {
+  async function handleMessages(message) {
     if (message.id == "show-modal") {
       await showModal();
       setLoading(document.getElementById('injected-text-id'));
-    };
-
-    if (message.id == "research-mode") {
-      console.log(message.body);
     }
 
     if (message.id == "explanation") {
@@ -261,8 +257,27 @@ chrome.runtime.onMessage.addListener(
       await typewrite(document.getElementById('injected-text-id'), message.body);
     }
 
-    fetch(message.url)
-      .then((response) => sendResponse({ statusCode: response.status }))
-    return true;
+    if (message.id == "research-mode") {
+      console.log(message.body);
+    }
+
+    // plug stored tabs in /breakitdown rather than storing beforehand
+    if (message.id == "store-tab") {
+      const { tabs } = await chrome.storage.local.get({ tabs: [] });
+      
+      if (message.body.checked) {
+        tabs.push({
+          tabId: message.body.tabId,
+          dom: document.documentElement.outerHTML
+        })
+      } else {
+        const existingIndex = tabs.findIndex(obj => obj.tabId == message.body.tabId)
+        if (existingIndex > -1) {
+          tabs.splice(existingIndex, 1);
+        }
+      }
+
+      await chrome.storage.local.set({ tabs });
+    }
   }
 );
