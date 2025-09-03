@@ -62,12 +62,12 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
-  const { tabs } = await chrome.storage.local.get({ tabs: [] });
-  const researchTabIndex = tabs.findIndex(obj => obj.tabId == tabId)
+  const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
+  const researchTabIndex = researchTabs.findIndex(obj => obj.tabId == tabId)
 
   if (researchTabIndex > -1) {
-    tabs.splice(researchTabIndex, 1);
-    await chrome.storage.local.set({ tabs });
+    researchTabs.splice(researchTabIndex, 1);
+    await chrome.storage.local.set({ researchTabs });
   }
 
   await chrome.runtime.sendMessage({ id: "refresh-tab-options" })

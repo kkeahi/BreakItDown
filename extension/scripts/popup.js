@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadTabs() {
   const resourceOptions = document.getElementById('resource-options');
   
-  const { tabs } = await chrome.storage.local.get({ tabs: [] });
+  const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
   const openedTabs = await chrome.tabs.query({});
 
   for (const tab of openedTabs) {
@@ -30,7 +30,7 @@ async function loadTabs() {
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    if (tabs.some(obj => obj.tabId == tab.id)) checkbox.checked = true;
+    if (researchTabs.some(obj => obj.tabId == tab.id)) checkbox.checked = true;
     option.appendChild(checkbox);
 
     const checkmark = document.createElement('span');
