@@ -1,6 +1,6 @@
 const backendUrl = "http://localhost:8080"
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "main",
     title: "Break it down",
@@ -8,43 +8,60 @@ chrome.runtime.onInstalled.addListener(async () => {
   });
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === "main") {
+async function fetchData(endpoint, payload) {
+  const body = JSON.stringify(payload);
+  console.log(`${backendUrl}/api${endpoint}`);
 
-    await chrome.tabs.sendMessage(tab.id, {
-      id: "show-modal"
+  try {
+    const response = await fetch(`${backendUrl}/api${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
     });
 
-    try {
-      const response = await fetch(`${backendUrl}/api/breakitdown`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: info.selectionText
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      await chrome.tabs.sendMessage(tab.id, {
-        id: "explanation",
-        body: data.response
-      });
-
-    } catch (err) {
-      console.error("Failed to simplify text: ", err);
+    if (!response.ok) {
+      throw new Error(`${response.status}`);
     }
+
+    const data = await response.json();
+    return data.response;
+
+  } catch (err) {
+    console.error("Fetch error: ", err); // make sure backend is running
+    return "An error occurred.";
   }
+}
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId != "main") {
+    return;
+  }
+
+  await chrome.tabs.sendMessage(tab.id, {
+    id: "show-modal"
+  });
+
+  const { researchMode = false } = await chrome.storage.local.get('researchMode');
+  const researchTabs = await chrome.storage.local.get({ researchTabs: [] });
+  console.log(researchMode);
+
+  let response;
+  if (researchMode && researchTabs) {
+    const researchTabs = await chrome.storage.local.get({ researchTabs: [] });
+    response = await fetchData('/research', { subject: info.selectionText, tabContext: researchTabs })
+  } else {
+    response = await fetchData('/breakitdown', { subject: info.selectionText });
+  }
+    
+  await chrome.tabs.sendMessage(tab.id, {
+    id: "explanation",
+    body: response
+  });
 });
 
 chrome.runtime.onMessage.addListener(
   async function handleMessages(message) {
     if (message.id == "store-tab") {
-      console.log(message.id);
       await chrome.tabs.sendMessage(message.body.tabId, {
         id: message.id,
         body: {
