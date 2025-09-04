@@ -13,12 +13,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   researchModeButton.addEventListener('change', async (event) => {
     const checked = event.target.checked;
     await chrome.storage.local.set({ researchMode: checked });
+
+    if (checked) {
+      const openedTabContainers = document.body.querySelectorAll('.option-disabled');
+      const openedTabCheckmarks = document.body.querySelectorAll('.sub-checkmark-disabled');
+      const openedTabCheckboxes = document.body.querySelectorAll('.sub-checkbox-disabled');
+
+      openedTabContainers.forEach((e) => e.className = 'option');
+      openedTabCheckmarks.forEach((e) => e.className = 'sub-checkmark');
+      openedTabCheckboxes.forEach((e) => {
+        e.className = 'sub-checkbox';
+        e.disabled = false;
+      });
+    } else {
+      const openedTabContainers = document.body.querySelectorAll('.option');
+      const openedTabCheckmarks = document.body.querySelectorAll('.sub-checkmark');
+      const openedTabCheckboxes = document.body.querySelectorAll('.sub-checkbox');
+
+      openedTabContainers.forEach((e) => e.className = 'option-disabled');
+      openedTabCheckmarks.forEach((e) => e.className = 'sub-checkmark-disabled');
+      openedTabCheckboxes.forEach((e) => {
+        e.className = 'sub-checkbox-disabled';
+        e.disabled = true;
+      });
+    }
   });
 });
 
 async function loadTabs() {
-  const resourceOptions = document.getElementById('resource-options');
+  const openedTabContainer = document.getElementById('opened-tab-container');
   
+  const { researchMode = false } = await chrome.storage.local.get("researchMode");
   const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
   const openedTabs = await chrome.tabs.query({});
 
@@ -26,15 +51,17 @@ async function loadTabs() {
     if (tab.title == "New Tab" || tab.title == "Extensions") continue;
 
     const option = document.createElement('label');
-    option.className = 'option';
+    researchMode ? option.className = 'option' : option.className = 'option-disabled';
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    if (researchTabs.some(obj => obj.tabId == tab.id)) checkbox.checked = true;
+    (researchTabs.some(obj => obj.tabId == tab.id)) ? checkbox.checked = true : checkbox.checked = false;
+    researchMode ? checkbox.className = 'sub-checkbox' : checkbox.className = 'sub-checkbox-disabled';
+    researchMode ? checkbox.disabled = false : checkbox.disabled = true;
     option.appendChild(checkbox);
 
     const checkmark = document.createElement('span');
-    checkmark.className = 'sub-checkmark';
+    researchMode ? checkmark.className = 'sub-checkmark' : checkmark.className = 'sub-checkmark-disabled'
     option.appendChild(checkmark);
 
     const label = document.createElement('span');
@@ -42,13 +69,6 @@ async function loadTabs() {
     option.appendChild(label);
 
     checkbox.addEventListener('change', async (event) => {
-      const { researchMode = false } = await chrome.storage.local.get("researchMode");
-
-      if (researchMode == false) {
-        checkbox.checked = !(checkbox.checked);
-        return;
-      }
-
       await chrome.runtime.sendMessage({
         id: "store-tab",
         body: {
@@ -58,7 +78,7 @@ async function loadTabs() {
       });
     })
 
-    resourceOptions.appendChild(option);
+    openedTabContainer.appendChild(option);
   }
 }
 

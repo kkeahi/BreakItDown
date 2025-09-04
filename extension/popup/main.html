@@ -4,7 +4,6 @@
           .modal {
             padding: 10px;
             width: 250px;
-            cursor: pointer;
             font-size: 20px;
             background: #FFD166;
             color: #3A2E2E;
@@ -28,11 +27,9 @@
             box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
             margin-bottom: 8px;
          }
-
          .main-options:hover {
             background: #FFC947;
          }
-         
          .main-options input {
             position: absolute;
             opacity: 0;
@@ -40,7 +37,6 @@
             height: 0;
             width: 0;
          }
-         
          .checkmark {
             position: relative;
             height: 22px;
@@ -50,15 +46,12 @@
             margin-right: 12px;
             flex-shrink: 0;
          }
-         
          .main-options:hover .checkmark {
             background-color: #694f46;
          }
-         
          .main-options input:checked ~ .checkmark {
             background-color: #D7263D;
          }
-         
          .checkmark:after {
             content: "";
             position: absolute;
@@ -71,7 +64,6 @@
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
          }
-         
          .main-options input:checked ~ .checkmark:after {
             display: block;
          }
@@ -79,7 +71,6 @@
          .sub-options {
             margin: 8px 5px s 5px;
          }
-         
          .option {
             display: flex;
             align-items: center;
@@ -97,19 +88,17 @@
             margin-bottom: 4px;
             transition: background-color 0.2s ease;
          }
-         
          .option:hover {
             background: #695148;
          }
-         
-         .option input {
+
+         .sub-checkbox {
             position: absolute;
             opacity: 0;
             cursor: pointer;
             height: 0;
             width: 0;
          }
-         
          .sub-checkmark {
             position: relative;
             height: 18px;
@@ -119,11 +108,9 @@
             margin-right: 10px;
             flex-shrink: 0;
          }
-         
-         .option input:checked ~ .sub-checkmark {
+         .sub-checkbox:checked ~ .sub-checkmark {
             background-color: #FFD166;
          }
-         
          .sub-checkmark:after {
             content: "";
             position: absolute;
@@ -136,8 +123,61 @@
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
          }
-         
-         .option input:checked ~ .sub-checkmark:after {
+         .sub-checkbox:checked ~ .sub-checkmark:after {
+            display: block;
+         }
+
+
+         .option-disabled {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 8px 12px;
+            font-size: 16px;
+            overflow-wrap: break-word;
+            word-wrap: break-word; 
+            word-break: break-word;
+            background: #8D6E63;
+            color: #ebccc1;
+            border: 1px solid #8D6E63;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: background-color 0.2s ease;
+
+            cursor: default;
+            opacity: 0.7;
+         }
+         .sub-checkbox-disabled {
+            position: absolute;
+            opacity: 0;
+            height: 0;
+            width: 0;
+         }
+         .sub-checkmark-disabled {
+            position: relative;
+            height: 18px;
+            width: 18px;
+            background-color: #fff4da;
+            border-radius: 2px;
+            margin-right: 10px;
+            flex-shrink: 0;
+         }
+         .sub-checkbox-disabled:checked ~ .sub-checkmark-disabled {
+            background-color: #FFD166;
+         }
+         .sub-checkmark-disabled:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+         }
+         .sub-checkbox-disabled:checked ~ .sub-checkmark-disabled:after {
             display: block;
          }
       </style>
@@ -153,21 +193,21 @@
             <span>Research Mode</span>
          </label>
 
-         <div class="sub-options" id="resource-options">
+         <div class="sub-options" id="opened-tab-container">
             <!-- <label class="option">
-               <input type="checkbox" id="grind-75-checkbox">
+               <input type="checkbox" class="sub-checkbox">
                <span class="sub-checkmark"></span>
                <span>Option 1</span>
             </label>
             
             <label class="option">
-               <input type="checkbox" id="leetcode-patterns-checkbox">
+               <input type="checkbox" class="sub-checkbox">
                <span class="sub-checkmark"></span>
                <span>Option 2</span>
             </label>
             
-            <label class="option">
-               <input type="checkbox" id="system-design-checkbox">
+            <label class="option" class="sub-checkbox">
+               <input type="checkbox">
                <span class="sub-checkmark"></span>
                <span>Option 3</span>
             </label> -->
