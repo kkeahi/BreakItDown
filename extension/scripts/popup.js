@@ -42,6 +42,13 @@ async function loadTabs() {
     option.appendChild(label);
 
     checkbox.addEventListener('change', async (event) => {
+      const { researchMode = false } = await chrome.storage.local.get("researchMode");
+
+      if (researchMode == false) {
+        checkbox.checked = !(checkbox.checked);
+        return;
+      }
+
       await chrome.runtime.sendMessage({
         id: "store-tab",
         body: {
