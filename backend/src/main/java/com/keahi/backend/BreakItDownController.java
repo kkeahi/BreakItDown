@@ -27,4 +27,11 @@ public class BreakItDownController {
     String prompt = promptService.createPrompt(context.getSubject());
     return new Response(client.query(prompt));
   }
+
+  @PostMapping("/research")
+  public Response research(@RequestBody Context context) {
+    Gemini client = new Gemini();
+    String prompt = promptService.createResearchPrompt(context.getSubject(), context.getTabs());
+    return new Response(client.query(prompt));
+  }
 }
