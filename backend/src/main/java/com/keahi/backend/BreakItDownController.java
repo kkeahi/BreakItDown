@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "chrome-extension://ngokcbcmejdngmehmcobbabkdhephbao")
+@CrossOrigin(origins = "chrome-extension://nbpmifdfjibkfjlhbpedldcakfbbliig")
 public class BreakItDownController {
 
   private final PromptService promptService;
