@@ -30,6 +30,7 @@ public class BreakItDownController {
 
   @PostMapping("/research")
   public Response research(@RequestBody Context context) {
+    System.err.println(context.getTabs());
     Gemini client = new Gemini();
     String prompt = promptService.createResearchPrompt(context.getSubject(), context.getTabs());
     return new Response(client.query(prompt));

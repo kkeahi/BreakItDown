@@ -2,11 +2,11 @@ package com.keahi.backend;
 
 public final class Context {
   private String subject;
-  private Tab tabs;
+  private Tab[] tabs;
 
   public Context() {}
 
-  public Context(String newSubject, Tab newTabs) { 
+  public Context(String newSubject, Tab[] newTabs) { 
     this.subject = newSubject;
     this.tabs = newTabs;
   }
@@ -15,7 +15,7 @@ public final class Context {
     return this.subject;
   }
 
-  public Tab getTabs() {
+  public Tab[] getTabs() {
     return this.tabs;
   }
 
@@ -23,7 +23,7 @@ public final class Context {
     this.subject = subject;
   }
 
-  public void setTabs(Tab tabs) {
+  public void setTabs(Tab[] tabs) {
     this.tabs = tabs;
   }
 }
