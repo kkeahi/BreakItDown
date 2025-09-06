@@ -44,7 +44,7 @@ async function loadTabs() {
   const openedTabContainer = document.getElementById('opened-tab-container');
   
   const { researchMode = false } = await chrome.storage.local.get("researchMode");
-  const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
+  const { tabs } = await chrome.storage.local.get({ tabs: [] });
   const openedTabs = await chrome.tabs.query({});
 
   for (const tab of openedTabs) {
@@ -53,9 +53,10 @@ async function loadTabs() {
     const option = document.createElement('label');
     researchMode ? option.className = 'option' : option.className = 'option-disabled';
 
+    // clean all this up and make sure it works
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    (researchTabs.some(obj => obj.tabId == tab.id)) ? checkbox.checked = true : checkbox.checked = false;
+    (tabs.some(obj => obj.tabId == tab.id)) ? checkbox.checked = true : checkbox.checked = false;
     researchMode ? checkbox.className = 'sub-checkbox' : checkbox.className = 'sub-checkbox-disabled';
     researchMode ? checkbox.disabled = false : checkbox.disabled = true;
     option.appendChild(checkbox);

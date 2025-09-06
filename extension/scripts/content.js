@@ -263,21 +263,21 @@ chrome.runtime.onMessage.addListener(
 
     // plug stored tabs in /breakitdown rather than storing beforehand
     if (message.id == "store-tab") {
-      const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
+      const { tabs } = await chrome.storage.local.get({ tabs: [] });
       
       if (message.body.checked) {
-        researchTabs.push({
+        tabs.push({
           tabId: message.body.tabId,
           dom: document.documentElement.outerHTML
         })
       } else {
-        const existingIndex = researchTabs.findIndex(obj => obj.tabId == message.body.tabId)
+        const existingIndex = tabs.findIndex(obj => obj.tabId == message.body.tabId)
         if (existingIndex > -1) {
-          researchTabs.splice(existingIndex, 1);
+          tabs.splice(existingIndex, 1);
         }
       }
 
-      await chrome.storage.local.set({ researchTabs });
+      await chrome.storage.local.set({ tabs });
     }
   }
 );

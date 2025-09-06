@@ -28,6 +28,7 @@ async function fetchData(endpoint, payload) {
 
   } catch (err) {
     console.error("Fetch error: ", err); // make sure backend is running
+    console.error(`Fetch: ${backendUrl}/api${endpoint}`);
     return "An error occurred.";
   }
 }
@@ -42,13 +43,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   });
 
   const { researchMode = false } = await chrome.storage.local.get('researchMode');
-  const researchTabs = await chrome.storage.local.get({ researchTabs: [] });
-  console.log(researchMode);
+  const { tabs = [] } = await chrome.storage.local.get({ tabs: [] });
 
   let response;
-  if (researchMode && researchTabs) {
-    const researchTabs = await chrome.storage.local.get({ researchTabs: [] });
-    response = await fetchData('/research', { subject: info.selectionText, tabContext: researchTabs })
+  if (researchMode) {
+    console.log({ subject: info.selectionText, tabs });
+    response = await fetchData('/research', { subject: info.selectionText, tabs}) // implement /research next
   } else {
     response = await fetchData('/breakitdown', { subject: info.selectionText });
   }
@@ -79,12 +79,12 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 });
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
-  const { researchTabs } = await chrome.storage.local.get({ researchTabs: [] });
-  const researchTabIndex = researchTabs.findIndex(obj => obj.tabId == tabId)
+  const { tabs } = await chrome.storage.local.get({ tabs: [] });
+  const researchTabIndex = tabs.findIndex(obj => obj.tabId == tabId)
 
   if (researchTabIndex > -1) {
-    researchTabs.splice(researchTabIndex, 1);
-    await chrome.storage.local.set({ researchTabs });
+    tabs.splice(researchTabIndex, 1);
+    await chrome.storage.local.set({ tabs });
   }
 
   await chrome.runtime.sendMessage({ id: "refresh-tab-options" })
