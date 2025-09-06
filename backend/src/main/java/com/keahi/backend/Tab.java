@@ -1,29 +1,29 @@
 package com.keahi.backend;
 
 public final class Tab {
-  private String id;
-  private Long dom;
+  private Long tabId;
+  private String dom;
 
   public Tab() {}
 
-  public Tab(String newId, Long newDom) { 
-    this.id = newId;
+  public Tab(Long newId, String newDom) { 
+    this.tabId = newId;
     this.dom = newDom;
   }
 
-  public String getId() {
-    return this.id;
+  public Long getTabId() {
+    return this.tabId;
   }
 
-  public Long getDom() {
+  public String getDom() {
     return this.dom;
   }
 
-  public void setSubject(String id) {
-    this.id = id;
+  public void setTabId(Long tabId) {
+    this.tabId = tabId;
   }
 
-  public void setTabs(Long dom) {
+  public void setTabs(String dom) {
     this.dom = dom;
   }
 }
